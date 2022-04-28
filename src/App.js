@@ -1,18 +1,23 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import "./App.css";
 import { getEmptyBoard } from "./utils/utils";
 import { GameContainer } from "./components/GameContainer";
 import { useGameTime } from "./hooks/useGameTime";
 import { RightPanel } from "./components/RightPanel";
 import { TileBoard } from "./components/TileBoard";
+import { useBoard } from "./hooks/useBoard";
 
 function App() {
-  const onTick = () => {
-    console.log("tic tic");
-  };
-  const [speed, setSpeed] = useState(1000);
-  const [board] = useState(getEmptyBoard());
 
+  const [player, updatePosition, board] = useBoard();
+
+  const onTick = useCallback(() => {
+    console.log("tic tic");
+    updatePosition();
+  },[]);
+
+  const [speed, setSpeed] = useState(1000);
+  
   const { isRunning, startTime, stopTime } = useGameTime({ onTick, speed});
 
   return (
