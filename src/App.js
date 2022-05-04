@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
 import "./App.css";
-import { getEmptyBoard } from "./utils/utils";
 import { GameContainer } from "./components/GameContainer";
 import { useGameTime } from "./hooks/useGameTime";
 import { RightPanel } from "./components/RightPanel";
@@ -9,14 +8,13 @@ import { useBoard } from "./hooks/useBoard";
 
 function App() {
 
-  const [player, updatePosition, board] = useBoard();
+  const [speed, setSpeed] = useState(1000);
+  const [updateBoard, board] = useBoard();
 
   const onTick = useCallback(() => {
     console.log("tic tic");
-    updatePosition();
+    updateBoard();
   },[]);
-
-  const [speed, setSpeed] = useState(1000);
   
   const { isRunning, startTime, stopTime } = useGameTime({ onTick, speed});
 
