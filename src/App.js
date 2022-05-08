@@ -5,9 +5,9 @@ import { useGameTime } from "./hooks/useGameTime";
 import { RightPanel } from "./components/RightPanel";
 import { TileBoard } from "./components/TileBoard";
 import { useBoard } from "./hooks/useBoard";
+import { DIRECTION } from "./utils/utils";
 
 function App() {
-
   const [speed, setSpeed] = useState(1000);
   const [updateBoard, board] = useBoard();
 
@@ -18,8 +18,19 @@ function App() {
   
   const { isRunning, startTime, stopTime } = useGameTime({ onTick, speed});
 
+  const move = ({ keyCode }) => {
+    console.log('moved....');
+    stopTime();
+    if (keyCode === 37) {
+      updateBoard(DIRECTION.left);
+    } else if (keyCode === 39) {
+      updateBoard(DIRECTION.right);
+    } 
+    startTime();
+  };
+
   return (
-    <GameContainer>
+    <GameContainer keyDown ={move}>
       <TileBoard board={board} />
       <RightPanel>
         <button onClick={startTime} disabled={isRunning}>
