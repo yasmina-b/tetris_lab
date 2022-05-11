@@ -12,7 +12,17 @@ export const useBoard = () => {
     tetromino: randomTetromino(),
   });
 
-  const updatePosition = useCallback((direction = DIRECTION.down) => {
+  let oldTetro = player.current.tetromino.shape;
+
+  const rotateTetromino = () => {
+    let newTetro = player.current.tetromino.shape[0].map((_, colIndex) =>
+      player.current.tetromino.shape.map((row) => row[colIndex])
+    );
+
+    player.current.tetromino.shape = newTetro;
+  };
+
+  const updatePosition = useCallback((direction = DIRECTION.down, rotate = false) => {
     let verticalAdjustment = 0;
     let horizontalAdjustment = 0;
 
@@ -31,6 +41,10 @@ export const useBoard = () => {
         break;
     }
 
+    if(rotate) {
+      rotateTetromino();
+    }
+
     player.current = {
       currentPos: {
         row: player.current.currentPos.row + verticalAdjustment,
@@ -40,7 +54,7 @@ export const useBoard = () => {
     };
   }, []);
 
-  const updateBoard = (direction = DIRECTION.down) => {
+  const updateBoard = (direction = DIRECTION.down, rotate = false) => {
     // 1. sterg piesa (pozitia veche)
     player.current.tetromino.shape.forEach((row, rowIdx) => {
       row.forEach((val, colIdx) => {
@@ -54,7 +68,7 @@ export const useBoard = () => {
 
     // 2. muta piesa mai jos
 
-    updatePosition(direction);
+    updatePosition(direction,rotate);
 
     // 3. verifica daca sunt coliziuni
 
@@ -78,8 +92,10 @@ export const useBoard = () => {
     });
 
     // 4. daca sunt coliziuni intoarce piesa inapoi + log
-    if (isCollided) {
-      console.log("Colision!!!");
+    if (isCollided && rotate) {
+      player.current.tetromino.shape = oldTetro;
+    } else if (isCollided) {
+      console.log("Collission!!!");
       updatePosition(getOppositeDirection(direction));
     }
 
@@ -108,6 +124,7 @@ export const useBoard = () => {
     }
     setBoard([...board]);
   };
+
 
   return [updateBoard, board];
 };
