@@ -37,16 +37,17 @@ function App() {
     <GameContainer keyDown ={move}>
       <TileBoard board={board} />
       <RightPanel>
-        <button onClick={startTime} disabled={isRunning}>
+        <h2>MY TETRIS GAME</h2>
+        <button  className="start-button" onClick={startTime} disabled={isRunning}>
           START
         </button>
-        <button onClick={stopTime} disabled={!isRunning}>
+        <button className="stop-button" onClick={stopTime} disabled={!isRunning}>
           STOP
         </button>
-        <button onClick={() => setSpeed((prev) => prev - 100)}>
+        <button className="fast-button" onClick={() => setSpeed((prev) => prev - 100)}>
           GO FASTER
         </button>
-        <span> The time is {isRunning ? "running" : "NOT running"}</span>
+        <h5> The time is {isRunning ? "running" : "NOT running"}</h5>
       </RightPanel>
     </GameContainer>
   );
