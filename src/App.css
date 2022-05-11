@@ -1,3 +1,6 @@
+* {
+  font-family: 'Press Start 2P', cursive;
+}
 .board {
   height: 90vh;
   width: 500px;
@@ -6,14 +9,45 @@
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: repeat(20, 1fr);
   grid-gap: 5px;
-  
 }
 .item {
   grid-column-start: 3;
   grid-column-end: 4;
   grid-row-start: 3;
   grid-row-end: 4;
-  background-color: pink;
+  background-color: pink ;
+}
+
+.start-button {
+  font-size: 16px;
+  margin-top: 20px;
+  width: 40%;
+  border: none;
+  padding: 15px 30px;
+  background-color:#4caf50;
+  cursor: pointer;
+}
+
+.stop-button {
+  font-size: 16px;
+  margin-top: 20px;
+  width: 40%;
+  border: none;
+  padding: 15px 30px;
+  background-color:#FF4500;
+  cursor: pointer;
+  
+}
+
+.fast-button {
+  font-size: 16px;
+  margin-top: 20px;
+  width: 40%;
+  border: none;
+  padding: 15px 30px;
+  background-color:#89CFF0;
+  cursor: pointer;
+  
 }
 
 

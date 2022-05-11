@@ -10,7 +10,7 @@ export function TileBoard({ board }) {
       tiles.push({
         row: rowIdx + 1,
         col: colIdx + 1,
-        color: val || "lightgray",
+        color: val || "#28282B",
       });
     });
   });
