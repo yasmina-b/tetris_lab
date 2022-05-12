@@ -15,6 +15,7 @@ export const useBoard = () => {
   let oldTetro = player.current.tetromino.shape;
 
   const rotateTetromino = () => {
+    oldTetro = player.current.tetromino.shape;
     let newTetro = player.current.tetromino.shape[0].map((_, colIndex) =>
       player.current.tetromino.shape.map((row) => row[colIndex])
     );
@@ -73,6 +74,7 @@ export const useBoard = () => {
     // 3. verifica daca sunt coliziuni
 
     let isCollided = false;
+    let isOut = false;
     player.current.tetromino.shape.forEach((row, rowIdx) => {
       row.forEach((val, colIdx) => {
         if (val === true) {
@@ -87,6 +89,9 @@ export const useBoard = () => {
           ) {
             isCollided = true;
           }
+          if(row < 0) {
+            isOut = true;
+          }
         }
       });
     });
@@ -94,6 +99,7 @@ export const useBoard = () => {
     // 4. daca sunt coliziuni intoarce piesa inapoi + log
     if (isCollided && rotate) {
       player.current.tetromino.shape = oldTetro;
+      updatePosition(getOppositeDirection(direction));
     } else if (isCollided) {
       console.log("Collission!!!");
       updatePosition(getOppositeDirection(direction));
@@ -115,7 +121,13 @@ export const useBoard = () => {
       keyPressed = false;
     }
 
-    if (isCollided && direction === DIRECTION.down) {
+    if (isCollided && direction === DIRECTION.down && rotate && isOut) {
+      player.current = {
+        currentPos: { row: 0, column: 5 },
+        tetromino: randomTetromino(),
+      };
+      keyPressed = false;
+    } else if (isCollided && direction === DIRECTION.down && !rotate) {
       player.current = {
         currentPos: { row: 0, column: 5 },
         tetromino: randomTetromino(),
@@ -124,7 +136,6 @@ export const useBoard = () => {
     }
     setBoard([...board]);
   };
-
 
   return [updateBoard, board];
 };
