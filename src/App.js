@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import "./App.css";
 import { GameContainer } from "./components/GameContainer";
 import { useGameTime } from "./hooks/useGameTime";
@@ -14,9 +14,9 @@ import {ThemeContext} from "./components/CustomThemeProvider"
 function App() {
   const {darkMode,setDarkMode} = useContext(ThemeContext);
   const gigi = useContext(ThemeContext);
-  console.log("hello",gigi);
+  //console.log("hello",gigi);
   const [speed, setSpeed] = useState(1000);
-  const [updateBoard, board, drawPlayer] = useBoard();
+  const [updateBoard, board, drawPlayer,initGame,gameOver,score] = useBoard();
 
   const onTick = useCallback(() => {
     console.log("tic tic");
@@ -24,6 +24,16 @@ function App() {
   },[]);
   
   const { isRunning, startTime, stopTime } = useGameTime({ onTick, speed});
+
+  useEffect (() => {
+    if(gameOver && isRunning){
+      stopTime();
+    }
+  },[gameOver])
+
+  useEffect (() => {
+    setSpeed((prev) => 0.9 * prev)
+  },[score])
 
   const move = ({ keyCode }) => {
     console.log('The tetromino is moving');
@@ -42,8 +52,9 @@ function App() {
   const [value, setValue] = useState(0);
 
   function onStartHandler(){
-    drawPlayer();
+    //drawPlayer();
     startTime();
+    initGame();
   }
 
   return (
@@ -57,6 +68,7 @@ function App() {
                 <Button variant="contained" color="secondary" size="medium" onClick={onStartHandler} disabled={isRunning} >START GAME</Button>
                 <Button variant="contained" color="error" size="medium" onClick={stopTime} disabled={!isRunning}>STOP GAME</Button>
                 <Button variant="contained" color="primary" size="medium" onClick={() => setSpeed((prev) => prev - 100)}>GO FASTER</Button>
+                <span>Score : {score}</span>
                 </Stack>
                 <h5> The time is {isRunning ? "running" : "NOT running"}</h5>
                 <Stack spacing={1}>
