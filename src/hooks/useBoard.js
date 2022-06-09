@@ -4,6 +4,8 @@ import { getEmptyBoard, DIRECTION, getOppositeDirection } from "../utils/utils";
 
 export const useBoard = () => {
   const [board, setBoard] = useState(getEmptyBoard());
+  const [gameOver, setGameOver] = useState(true);
+  const [score, setScore] = useState(0);
 
   let keyPressed = false;
 
@@ -22,6 +24,19 @@ export const useBoard = () => {
 
     player.current.tetromino.shape = newTetro;
   };
+
+  const initGame = () => {
+    if(gameOver){
+      const newBoard = getEmptyBoard();
+      player.current = {
+        currentPos: { row: 0, column: 5 },
+        tetromino: randomTetromino(),
+      };
+      drawPlayer(newBoard);
+      setBoard([...newBoard]);
+      setGameOver(false);
+    }
+  }
 
   const updatePosition = useCallback((direction = DIRECTION.down, rotate = false) => {
     let verticalAdjustment = 0;
@@ -121,6 +136,12 @@ export const useBoard = () => {
       keyPressed = false;
     }
 
+    if(isCollided && player.current.currentPos.row==0){
+      setGameOver(true);
+      console.log("game OVER");
+      return;
+    }
+
     if (isCollided && direction === DIRECTION.down && rotate && isOut) {
       player.current = {
         currentPos: { row: 0, column: 5 },
@@ -138,6 +159,7 @@ export const useBoard = () => {
             }
             if(isLineComplete){
                 linesToErase.push(i);
+                setScore((prev) => prev + 1);
             }
         }
 
@@ -166,7 +188,7 @@ export const useBoard = () => {
 
   function eraseLines(linesToErase, board){
     for(let i = 0; i < linesToErase.length; i++){
-        let lineIndex = linesToErase[i] - i;
+        let lineIndex = linesToErase[i];
         for(let m = lineIndex; m > 0; m--){
             for(let n = 0; n < 12; n++){
                 board[m][n] = board[m - 1][n];
@@ -175,7 +197,7 @@ export const useBoard = () => {
     }
 } 
 
-  function drawPlayer(){
+  function drawPlayer(board){
     player.current.tetromino.shape.forEach((row, rowIdx) => {
       row.forEach((val, colIdx) => {
         const row = player.current.currentPos.row + rowIdx;
@@ -191,5 +213,5 @@ export const useBoard = () => {
 
   }
 
-  return [updateBoard, board, drawPlayer];
+  return [updateBoard, board, drawPlayer, initGame, gameOver, score];
 };
